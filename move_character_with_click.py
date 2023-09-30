@@ -1,4 +1,5 @@
 from pico2d import *
+from math import *
 
 TUK_WIDTH, TUK_HEIGHT = 1280, 1024
 open_canvas(TUK_WIDTH, TUK_HEIGHT)
@@ -37,7 +38,9 @@ def draw():
     frame = (frame + 1) % 8
 
 def move():
-    print('움직여야 해')
+    global x, y, dirX, dirY
+    x += dirX
+    y += dirY
 
 running = True
 x, y = TUK_WIDTH // 2, TUK_HEIGHT // 2
@@ -49,7 +52,13 @@ hide_cursor()
 
 while running:
     if points: # 배열이 비어있지 않다면
+        if dirX == 0 and dirY == 0:
+            dirX = (points[0][0] - x) / sqrt((points[0][0] - x) ** 2 + (points[0][1] - y) ** 2)
+            dirY = (points[0][1] - y) / sqrt((points[0][0] - x) ** 2 + (points[0][1] - y) ** 2)
         move()
+        if int(points[0][0]) == int(x) and int(points[0][1]) == int(y):
+            points.remove(points[0])
+            dirX, dirY = 0, 0
 
     draw()
 
