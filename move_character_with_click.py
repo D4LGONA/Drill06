@@ -29,40 +29,47 @@ def draw():
     if points:
         for i in points:
             cursor.draw(i[0], i[1])
-    if dirX > 0:
+    if state == 0:
         character.clip_draw(frame * 100, 100 * 1, 100, 100, x, y)
     else:
         character.clip_draw(frame * 100, 100 * 0, 100, 100, x, y)
+    
     cursor.draw(cursorX, cursorY)
     update_canvas()
     frame = (frame + 1) % 8
 
 def move():
-    global x, y, dirX, dirY
-    x += dirX
-    y += dirY
+    global x, y, routes
+    x, y = routes[0][0], routes[0][1]
+    routes.remove(routes[0])
 
 running = True
 x, y = TUK_WIDTH // 2, TUK_HEIGHT // 2
 cursorX, cursorY = 0, 0
 points = []
+routes = []
 frame = 0
-dirX, dirY = 0, 0
+state = 0
 hide_cursor()
 
 while running:
     if points: # 배열이 비어있지 않다면
-        if dirX == 0 and dirY == 0:
-            dirX = (points[0][0] - x) / sqrt((points[0][0] - x) ** 2 + (points[0][1] - y) ** 2)
-            dirY = (points[0][1] - y) / sqrt((points[0][0] - x) ** 2 + (points[0][1] - y) ** 2)
+        if not routes:
+            if x < points[0][0]: state = 0
+            else: state = 1
+            x1, y1 = x, y
+            x2, y2 = points[0][0], points[0][1]
+            distance = sqrt((x1-x2) ** 2 + (y1-y2) **2)
+            for i in range(0, int(distance) + 1, 1):
+                t = i / int(distance)
+                routes.append([(1-t) * x1 + t * x2 , (1-t) * y1 + t * y2])
+            routes.append([x2, y2])
         move()
         if int(points[0][0]) == int(x) and int(points[0][1]) == int(y):
             points.remove(points[0])
-            dirX, dirY = 0, 0
+            routes.clear()
 
     draw()
-
-
     handle_events()
 
 close_canvas()
