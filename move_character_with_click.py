@@ -5,6 +5,7 @@ open_canvas(TUK_WIDTH, TUK_HEIGHT)
 
 TUK_ground = load_image('TUK_GROUND.png')
 character = load_image('animation_sheet.png')
+cursor = load_image('hand_arrow.png')
 
 
 def handle_events():
@@ -20,19 +21,22 @@ def handle_events():
             running = False
     pass
 
-
-
-running = True
-x, y = TUK_WIDTH // 2, TUK_HEIGHT // 2
-frame = 0
-hide_cursor()
-
-while running:
+def draw():
     clear_canvas()
     TUK_ground.draw(TUK_WIDTH // 2, TUK_HEIGHT // 2)
     character.clip_draw(frame * 100, 100 * 1, 100, 100, x, y)
     update_canvas()
     frame = (frame + 1) % 8
+
+
+running = True
+x, y = TUK_WIDTH // 2, TUK_HEIGHT // 2
+points = []
+frame = 0
+hide_cursor()
+
+while running:
+    
 
     handle_events()
 
